@@ -1,0 +1,337 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>欢迎访问触屏版飞牛网站</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<link rel="shortcut icon" href="http://www.feiniu.com/lib/sh_zh-cn/images/feiniu_favicon.ico">
+<link rel="stylesheet" type="text/css" href="http://cdn.staticfile.org/twitter-bootstrap/3.3.0/css/bootstrap.min.css">
+
+<script type="text/javascript" src="http://libs.useso.com/js/jquery/2.1.1-rc2/jquery.min.js"></script>
+<!-- <script type="text/javascript" src="http://libs.useso.com/js/angular.js/1.3.0-beta.9/angular.min.js"></script> -->
+<script type="text/javascript" src="//cdn.bootcss.com/react/0.13.3/react.min.js"></script>
+<script type="text/javascript" src="//cdn.bootcss.com/react/0.13.3/react-with-addons.min.js"></script>
+<script type="text/javascript" src="//cdn.bootcss.com/react/0.13.3/JSXTransformer.js"></script>
+
+<script type="text/javascript" src="http://cdn.staticfile.org/underscore.js/1.7.0/underscore-min.js"></script>
+
+<style type="text/css">
+	#versions li{
+		margin: 0 5px;
+	}
+	.nav-tabs{
+		border: none;
+	}
+	.panel{
+		border-color: #d9534f;
+		-webkit-transition: 0.1s;
+		-o-transition: 0.1s;
+		transition: 0.1s;
+	}
+	.panel .panel:hover{
+		background-color: #ddd;
+		-webkit-transform: scale(1.01);
+		-ms-transform: scale(1.01);
+		-o-transform: scale(1.01);
+		transform: scale(1.01);
+	}
+	.panel-body{
+		padding:1px 5px;
+	}
+	
+	.nav {
+		counter-reset: item;
+	}
+	.nav li{
+		padding: 5px;
+	}
+	.nav li a:before {
+		counter-increment: item;
+		content: counter(item)".";
+	}
+	.nav {
+		counter-reset: item;
+	}
+	#panel{
+		counter-reset: item2;
+	}
+	.panel-heading .btn:before{
+		counter-increment: item2;
+		content: counter(item2)"--";
+	}
+	.nav li small{
+		display: block;
+		text-align: center;
+	}
+	.nav li a{
+		padding: 3px;
+	}
+</style>
+
+</head>
+<body class="container-fluid">
+
+<h1>欢迎访问触屏版飞牛网站
+	<div id="sethtml"></div>
+	<div id="versions"></div>
+</h1>
+<!-- 输出点 -->
+<div id="panel" >
+	
+</div>
+<script type="text/javascript"></script>
+<!-- 模板 -->
+<div id="mub" style="display: none;">
+	<div id="panel-{{id}}" class="panel panel-default">
+	  <div class="panel-heading"><a class="btn btn-danger" href="{{url}}">{{i}}.{{name}}({{pname}})</a></div>
+	  <div class="panel-body">
+	    <ul class="nav nav-tabs">
+	    	{{li}}
+		</ul>
+	  </div>
+	</div>
+</div>
+<div id="mub-li" style="display:none;">
+	<li><a href="{{url}}">{{title}}</a><small>{{name}}</small></li>
+</div>
+<script>
+	// 	// 文件夹说明
+	var _sm={
+		about   :'关于我们',
+		act     :'其他',
+		cart    :'购物车',
+		category:'商品分类',
+		detail  :'商详',
+		list    :'商品列表',
+		my      :'个人中心',
+		order   :'订单相关',
+		search  :'搜索相关',
+		login   :'登录',
+		register:'注册',
+		card    :'购物卡',
+		gold    :'购物金',
+		address :'收货地址',
+		coupon  :'优惠券',
+		invoice :'发票',
+		IconFont:'字体图标',
+		pay     :'支付',
+		gestyle :'一些通用的样式',
+		seckill :'秒杀',
+		channel :'频道',
+		tuan    :'团购',
+		integral:'积分'
+	};
+	
+</script>
+<script>
+	function scrollTop(){
+		if(!!window.sessionStorage){
+			var $window=$(window);
+
+			if(window.sessionStorage.scroll){
+				$("body").animate({scrollTop: window.sessionStorage.scroll},100);
+			}
+			
+			$window.on('scroll',function(){
+				window.sessionStorage.scroll=$window.scrollTop();
+
+			});
+		}
+	}
+</script>
+<script type="text/jsx">
+	React.initializeTouchEvents(true);
+	var PureRenderMixin = React.addons.PureRenderMixin;
+	var Perf=React.addons.Perf;
+
+	var Versions=React.createClass({
+		onclick:function(event){
+			var $this=$(event.target);
+			// React.forceUpdate(<Index on={$this.html()}/>);
+			React.render(<Index on={$this.html()}/>, document.getElementById('panel'));
+		},
+		render:function(){
+			var self=this;
+			var cx=React.addons.classSet;
+
+			return (
+				<ul className="list-inline">
+					{
+						_.map(self.props.data,function(v,i){
+							// console.log();
+							var _css=cx({
+								"btn":true,
+								"btn-success":i==self.props.on,
+								"btn-default":!(i==self.props.on)
+							});
+							return <li className={_css} onClick={self.onclick}>{i}</li>
+						})
+					}
+				</ul>
+			)
+		}
+	});
+	// 根据提供的数据生成显示内容，因使用了递归所以数据处理交给了主体
+	var Mub = React.createClass({
+		render:function(){
+			var self=this;
+
+			var _data=self.props.data,
+				mk=_.map(_data,function(item,i){
+				var _svn=item.svn, // 获取当前数据子项
+					_ul=<Uls svn={_svn}/>, // 生成子项数据
+					_pul='', // 当前目录中的其他目录数据
+					_title=item.name+"("+(_sm[item.name] || "") +")"; // 文件夹名称
+
+				// 判断是否存在子目录，进行递归
+				if(item.plist.length){ 
+					_pul=<Mub data={item.plist}/>;
+				}
+
+				return (
+					<div className="panel panel-default">
+						<div className="panel-heading"><div className="btn btn-danger" >{_title}</div></div>
+						<div className="panel-body">
+							{_ul}
+							{_pul}
+						</div>
+					</div>
+				);
+
+			});
+
+			return <div>{mk}</div>;
+			
+		}
+	});
+	// html文件显示组件
+	var Uls=React.createClass({
+		render:function(){
+			var self=this;
+			var _data=self.props.svn;
+
+			return(
+				<ul className="nav nav-tabs">
+					{
+						_.map(_data,function(item){
+							return (
+									<li key={item.url}>
+										<a href={item.url} dangerouslySetInnerHTML={{__html: item.title}}></a>
+										<small>{item.name}</small>
+									</li>
+								)
+						})
+					}
+				</ul>
+			);
+		}
+	});
+	// 主体(获取数据和处理一些数据)
+	var Index = React.createClass({
+		getInitialState: function() {
+          	return {
+          		data:'', // 获取到的数据存放到此处
+          		key:''   // 当前关键词
+      		};
+        },
+        // 获取的数据到此处处理
+        dispose:function(data){
+        	var self=this;
+        	_.each(data,function(v){
+        		if(!v.name){
+	        		_.each(v,function(v2){
+	        			self.dispose(v2.plist)
+	        			v2.svn=self.dispose_svn(v2.svn);
+	        		});
+        		}else{
+        			self.dispose(v.plist);
+        			v.svn=self.dispose_svn(v.svn);
+        		}
+        	});
+        	return data;
+        },
+        dispose_svn:function (v){
+        	return _.chain(v)
+				.sortBy('name')
+				.sortBy(function(a){
+						if(a.title.indexOf("<s>")===-1){
+							return 1
+						}else{
+							return 9999;
+						}
+					}
+				)
+				.value();
+        },
+        // 关键词改变时
+        onChange:function(event){
+			var self=this;
+			var $this=$(event.target);
+
+			_.extend(self.state,{key:$this.val()});
+			self.setState(self.state);
+		},
+		// 获取数据
+        componentDidMount: function() {
+        	var self=this;
+		    $.get('_index/pp.json', function(result) {
+
+		    	if (self.isMounted()) {
+		    		_.extend(self.state,{
+		    			data:self.dispose(result)
+		    		});
+		    		self.setState(self.state);
+		    		scrollTop();
+		    	}
+		    }.bind(this),"json");
+		},
+		// 关键词过滤
+		keyfilter:function(data){
+			var self=this;
+			var _key=self.state.key;
+			if(_key){ // 当存在关键词的时候进行才数据处理，提示性能
+				data=_.filter(data,function(v){
+
+					if(v.plist.length){
+						v.plist=self.keyfilter(v.plist);
+					}
+
+					if (v.name.indexOf(_key)==-1){
+						v.svn=_.filter(v.svn,function(v2){
+							return v2.title.indexOf(_key)!=-1 || v2.name.indexOf(_key)!=-1;
+						});
+
+						if(v.svn.length ||v.plist.length){
+							return v;
+						}
+					}else{
+						return v;
+					}
+					
+				})
+			}
+			return data;
+		},
+		render:function(){
+			var self=this;
+			var _data=self.state.data;
+			
+			var _on=self.props.on || sessionStorage.on || _.keys(_data)[0]; //获取当前环境
+			_on && (sessionStorage.on=_on); // 防止第一次无数据时获取到的环境为空而存入本地变量中
+			console.time('1');
+			_data=self.keyfilter($.extend(true,{},_data[_on]));
+			console.timeEnd('1');
+			React.render(<Versions data={self.state.data} on={_on}/>, document.getElementById('versions'));
+			
+			return (
+				<div>
+					<input type="text" className="form-control" placeholder="关键词" onChange={self.onChange}/>
+					<Mub data={_data} />
+				</div>
+			);
+		}
+	});
+	React.render(<Index />, document.getElementById('panel'));
+</script>
+</body>
+</html>
